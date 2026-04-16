@@ -1,90 +1,237 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nightshift">
   <defs>
-    <radialGradient id="bgGrad" cx="30%" cy="25%" r="90%">
-      <stop offset="0%" stop-color="#1a1a26"/>
-      <stop offset="60%" stop-color="#0d0d14"/>
-      <stop offset="100%" stop-color="#05050a"/>
+    <!-- Deep night background, biased warm in upper-left -->
+    <radialGradient id="bgGrad" cx="28%" cy="22%" r="100%">
+      <stop offset="0%"  stop-color="#1d1b30"/>
+      <stop offset="40%" stop-color="#11101c"/>
+      <stop offset="100%" stop-color="#04030a"/>
     </radialGradient>
 
-    <radialGradient id="moonGrad" cx="30%" cy="35%" r="75%">
-      <stop offset="0%" stop-color="#fbf4e8"/>
-      <stop offset="65%" stop-color="#e8dcc4"/>
-      <stop offset="100%" stop-color="#b8a478"/>
+    <!-- Atmospheric haze -->
+    <radialGradient id="hazeOrange" cx="22%" cy="24%" r="58%">
+      <stop offset="0%"   stop-color="#ff5b2e" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#ff5b2e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="hazeGold" cx="80%" cy="82%" r="55%">
+      <stop offset="0%"   stop-color="#d4a574" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#d4a574" stop-opacity="0"/>
     </radialGradient>
 
-    <linearGradient id="streakGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ff7a4e"/>
-      <stop offset="50%" stop-color="#ff5b2e"/>
-      <stop offset="100%" stop-color="#e63e12"/>
+    <!-- Moon surface: warm cream -> dusty gold -->
+    <radialGradient id="moonSurface" cx="32%" cy="30%" r="85%">
+      <stop offset="0%"   stop-color="#fff8eb"/>
+      <stop offset="42%"  stop-color="#f4e6c8"/>
+      <stop offset="78%"  stop-color="#d8bf95"/>
+      <stop offset="100%" stop-color="#8a7350"/>
+    </radialGradient>
+
+    <!-- Streak gradient: hot core in middle, warm ends -->
+    <linearGradient id="streakCore" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#ff5b2e" stop-opacity="0"/>
+      <stop offset="14%"  stop-color="#ff7a4e"/>
+      <stop offset="50%"  stop-color="#fff0d8"/>
+      <stop offset="86%"  stop-color="#ff5b2e"/>
+      <stop offset="100%" stop-color="#e63e12" stop-opacity="0"/>
     </linearGradient>
 
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+    <linearGradient id="streakOuter" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#ff5b2e" stop-opacity="0"/>
+      <stop offset="50%"  stop-color="#ff5b2e"/>
+      <stop offset="100%" stop-color="#ff5b2e" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Glow filters -->
+    <filter id="glowSoft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="blurStrong" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="moonHalo" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <filter id="starTwinkle" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur stdDeviation="1.4"/>
     </filter>
 
-    <!-- Clip path that creates the crescent: full moon minus offset circle -->
-    <clipPath id="crescentClip">
-      <path d="M 256 116 A 140 140 0 1 0 256 396 A 140 140 0 1 0 256 116 Z M 310 256 m -130 0 a 130 130 0 1 0 260 0 a 130 130 0 1 0 -260 0 Z" clip-rule="evenodd"/>
+    <!-- Crescent mask: full moon minus offset overlay = lit crescent -->
+    <mask id="crescent">
+      <rect width="512" height="512" fill="black"/>
+      <circle cx="256" cy="256" r="140" fill="white"/>
+      <circle cx="305" cy="248" r="130" fill="black"/>
+    </mask>
+
+    <!-- Clip to the rounded square so glows don't spill -->
+    <clipPath id="frame">
+      <rect width="512" height="512" rx="120" ry="120"/>
     </clipPath>
   </defs>
 
-  <!-- Background -->
-  <rect width="512" height="512" rx="112" ry="112" fill="url(#bgGrad)"/>
+  <g clip-path="url(#frame)">
+    <!-- Base background with layered warm haze -->
+    <rect width="512" height="512" fill="url(#bgGrad)"/>
+    <rect width="512" height="512" fill="url(#hazeOrange)"/>
+    <rect width="512" height="512" fill="url(#hazeGold)"/>
 
-  <!-- Atmospheric glow -->
-  <circle cx="180" cy="180" r="220" fill="#ff5b2e" opacity="0.08"/>
-  <circle cx="380" cy="380" r="180" fill="#d4a574" opacity="0.05"/>
+    <!-- Faint nebula band along the streak diagonal -->
+    <g opacity="0.14">
+      <ellipse cx="256" cy="256" rx="340" ry="42" fill="#ff5b2e"
+               transform="rotate(-42 256 256)" filter="url(#blurStrong)"/>
+    </g>
 
-  <!-- Stars -->
-  <g fill="#f4ede4">
-    <circle cx="110" cy="120" r="1.8" opacity="0.7"/>
-    <circle cx="430" cy="95" r="2.2" opacity="0.9"/>
-    <circle cx="90" cy="360" r="1.4" opacity="0.6"/>
-    <circle cx="445" cy="400" r="1.6" opacity="0.75"/>
-    <circle cx="130" cy="430" r="1.2" opacity="0.5"/>
-    <circle cx="390" cy="450" r="1.4" opacity="0.6"/>
-    <circle cx="70" cy="250" r="1" opacity="0.5"/>
-    <circle cx="460" cy="250" r="1.2" opacity="0.6"/>
-    <circle cx="380" cy="60" r="1" opacity="0.5"/>
+    <!-- Distant stars -->
+    <g fill="#f4ede4">
+      <circle cx="78"  cy="92"  r="1.2" opacity="0.55"/>
+      <circle cx="138" cy="58"  r="1.0" opacity="0.45"/>
+      <circle cx="380" cy="50"  r="1.0" opacity="0.45"/>
+      <circle cx="64"  cy="178" r="0.9" opacity="0.40"/>
+      <circle cx="98"  cy="350" r="1.3" opacity="0.55"/>
+      <circle cx="56"  cy="412" r="1.0" opacity="0.45"/>
+      <circle cx="148" cy="448" r="1.4" opacity="0.60"/>
+      <circle cx="468" cy="240" r="1.0" opacity="0.45"/>
+      <circle cx="402" cy="448" r="1.1" opacity="0.50"/>
+      <circle cx="72"  cy="282" r="0.8" opacity="0.35"/>
+      <circle cx="356" cy="78"  r="0.9" opacity="0.40"/>
+      <circle cx="200" cy="34"  r="0.8" opacity="0.40"/>
+      <circle cx="494" cy="320" r="0.9" opacity="0.45"/>
+      <circle cx="22"  cy="260" r="0.8" opacity="0.40"/>
+    </g>
+
+    <!-- Anchor stars with twinkle and 4-point sparkle -->
+    <g fill="#fff7e8">
+      <g transform="translate(108 122)">
+        <circle r="2.8" filter="url(#starTwinkle)" opacity="0.85"/>
+        <circle r="1.5"/>
+        <g stroke="#fff7e8" stroke-width="0.7" stroke-linecap="round" opacity="0.6">
+          <line x1="0" y1="-7" x2="0" y2="7"/>
+          <line x1="-7" y1="0" x2="7" y2="0"/>
+        </g>
+      </g>
+      <g transform="translate(440 118)">
+        <circle r="2.4" filter="url(#starTwinkle)" opacity="0.85"/>
+        <circle r="1.3"/>
+        <g stroke="#fff7e8" stroke-width="0.6" stroke-linecap="round" opacity="0.55">
+          <line x1="0" y1="-6" x2="0" y2="6"/>
+          <line x1="-6" y1="0" x2="6" y2="0"/>
+        </g>
+      </g>
+      <g transform="translate(420 360)">
+        <circle r="1.9" filter="url(#starTwinkle)" opacity="0.8"/>
+        <circle r="1.0"/>
+      </g>
+      <g transform="translate(96 432)">
+        <circle r="1.7" filter="url(#starTwinkle)" opacity="0.8"/>
+        <circle r="0.9"/>
+      </g>
+    </g>
+
+    <!-- Moon outer halo -->
+    <circle cx="256" cy="256" r="170" fill="#fff0d0" opacity="0.05" filter="url(#moonHalo)"/>
+    <circle cx="256" cy="256" r="148" fill="#fff7e8" opacity="0.06"/>
+
+    <!-- Crescent: paint everything inside the crescent mask -->
+    <g mask="url(#crescent)">
+      <!-- Surface -->
+      <circle cx="256" cy="256" r="140" fill="url(#moonSurface)"/>
+
+      <!-- Subtle radial shading on the dark limb side (adds depth) -->
+      <radialGradient id="limbShade" cx="80%" cy="50%" r="60%">
+        <stop offset="0%"  stop-color="#000000" stop-opacity="0"/>
+        <stop offset="80%" stop-color="#000000" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#3a2a18" stop-opacity="0.45"/>
+      </radialGradient>
+      <circle cx="256" cy="256" r="140" fill="url(#limbShade)"/>
+
+      <!-- Craters: shadow + highlight pairs for 3D feel -->
+      <g>
+        <!-- big crater -->
+        <g transform="translate(168 222)">
+          <circle r="9.5" fill="#6b5640"/>
+          <circle r="9"   fill="#3d2f1f" opacity="0.55"/>
+          <circle r="4"   fill="#fff0d0" opacity="0.45" cx="-2.5" cy="-2.5"/>
+        </g>
+        <g transform="translate(148 304)">
+          <circle r="6.5" fill="#6b5640"/>
+          <circle r="5.5" fill="#3d2f1f" opacity="0.5"/>
+          <circle r="2.4" fill="#fff0d0" opacity="0.4" cx="-1.6" cy="-1.6"/>
+        </g>
+        <g transform="translate(180 358)">
+          <circle r="7.5" fill="#6b5640"/>
+          <circle r="6.5" fill="#3d2f1f" opacity="0.5"/>
+          <circle r="2.8" fill="#fff0d0" opacity="0.4" cx="-1.8" cy="-1.8"/>
+        </g>
+        <g transform="translate(135 200)" opacity="0.85">
+          <circle r="3.6" fill="#6b5640"/>
+          <circle r="2.6" fill="#3d2f1f" opacity="0.5"/>
+        </g>
+        <g transform="translate(160 270)" opacity="0.85">
+          <circle r="2.8" fill="#6b5640"/>
+        </g>
+        <g transform="translate(195 175)" opacity="0.85">
+          <circle r="3.2" fill="#6b5640"/>
+        </g>
+        <g transform="translate(170 395)" opacity="0.85">
+          <circle r="3.0" fill="#6b5640"/>
+        </g>
+        <g transform="translate(125 250)" opacity="0.7">
+          <circle r="1.8" fill="#6b5640"/>
+        </g>
+        <g transform="translate(190 335)" opacity="0.7">
+          <circle r="1.6" fill="#6b5640"/>
+        </g>
+      </g>
+
+      <!-- Lit limb edge highlight -->
+      <circle cx="256" cy="256" r="140" fill="none"
+              stroke="#fff8eb" stroke-width="2" opacity="0.45"/>
+
+      <!-- Inner terminator shadow (dark side of crescent) -->
+      <circle cx="305" cy="248" r="130" fill="none"
+              stroke="#1a140c" stroke-width="3" opacity="0.55"/>
+    </g>
+
+    <!-- Streak motion-blur ghost trail (under main streak) -->
+    <g opacity="0.45">
+      <path d="M 88 408 L 426 106"
+            stroke="url(#streakOuter)" stroke-width="40"
+            stroke-linecap="round" fill="none" filter="url(#blurStrong)"/>
+    </g>
+
+    <!-- Main streak with soft glow -->
+    <g filter="url(#glowSoft)">
+      <path d="M 88 408 L 426 106"
+            stroke="url(#streakCore)" stroke-width="20"
+            stroke-linecap="round" fill="none"/>
+    </g>
+
+    <!-- Hot white-core highlight (slightly shorter so the warm ends taper) -->
+    <path d="M 132 368 L 384 142"
+          stroke="#ffffff" stroke-width="3.5"
+          stroke-linecap="round" fill="none" opacity="0.95"/>
+
+    <!-- Trailing tip soft fade -->
+    <g transform="translate(88 408)">
+      <circle r="16" fill="#e63e12" opacity="0.20"/>
+      <circle r="8"  fill="#ff5b2e" opacity="0.45"/>
+    </g>
+
+    <!-- Leading tip burst with 4-point spark -->
+    <g transform="translate(426 106)">
+      <circle r="26" fill="#ff5b2e" opacity="0.18"/>
+      <circle r="15" fill="#ff5b2e" opacity="0.36"/>
+      <circle r="8"  fill="#ffd9b5"/>
+      <circle r="3.5" fill="#ffffff"/>
+      <g stroke="#fff0d8" stroke-width="1.6" stroke-linecap="round" opacity="0.9">
+        <line x1="0"   y1="-22" x2="0"   y2="-12"/>
+        <line x1="0"   y1="12"  x2="0"   y2="22"/>
+        <line x1="-22" y1="0"   x2="-12" y2="0"/>
+        <line x1="12"  y1="0"   x2="22"  y2="0"/>
+      </g>
+    </g>
   </g>
 
-  <!-- Draw full moon -->
-  <circle cx="256" cy="256" r="140" fill="url(#moonGrad)"/>
-
-  <!-- Overlay with background gradient to carve crescent -->
-  <circle cx="310" cy="256" r="128" fill="url(#bgGrad)"/>
-
-  <!-- Subtle craters on visible portion of crescent -->
-  <g opacity="0.18">
-    <circle cx="170" cy="225" r="7" fill="#6b5e4a"/>
-    <circle cx="150" cy="290" r="4" fill="#6b5e4a"/>
-    <circle cx="175" cy="340" r="5" fill="#6b5e4a"/>
-    <circle cx="140" cy="210" r="3" fill="#6b5e4a"/>
-    <circle cx="160" cy="265" r="2.5" fill="#6b5e4a"/>
-  </g>
-
-  <!-- Diagonal streak through moon (the "shift") -->
-  <g filter="url(#glow)">
-    <path d="M 110 390 L 410 120"
-          stroke="url(#streakGrad)"
-          stroke-width="16"
-          stroke-linecap="round"
-          fill="none"/>
-  </g>
-
-  <!-- Streak inner highlight -->
-  <path d="M 110 390 L 410 120"
-        stroke="#ffe0ce"
-        stroke-width="3"
-        stroke-linecap="round"
-        fill="none"
-        opacity="0.8"/>
-
-  <!-- Accent tick at top -->
-  <circle cx="410" cy="120" r="8" fill="#ff5b2e"/>
-  <circle cx="410" cy="120" r="14" fill="#ff5b2e" opacity="0.25"/>
+  <!-- iOS-style inner highlight ring on the corner radius -->
+  <rect x="1.5" y="1.5" width="509" height="509" rx="118.5" ry="118.5"
+        fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="1.5"/>
 </svg>
