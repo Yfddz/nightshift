@@ -59,3 +59,5 @@ App icon appears on home screen. Tap it → opens fullscreen, no browser UI, wor
 ## Data
 Everything saves to your phone's localStorage. Survives reboots, app closes, offline.
 Clearing Chrome data for that site wipes it.
+
+Auto-deploy connected via GitHub → Vercel.
