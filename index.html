@@ -30,8 +30,24 @@
     --accent-glow: #ff5b2e44;
     --line: #25242d;
     --gold: #d4a574;
+    --danger: #ff2e2e;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  body.beast {
+    --accent: #ff1f1f;
+    --accent-soft: #ff1f1f22;
+    --accent-glow: #ff1f1f66;
+    --bg: #0a0505;
+    --bg-raised: #15090b;
+    --line: #331414;
+  }
+
+  body.beast::before {
+    background-image:
+      radial-gradient(circle at 20% 10%, #ff1f1f20 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, #ff1f1f15 0%, transparent 55%);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -513,6 +529,137 @@
     font-style: normal;
   }
 
+  /* BEASTMODE */
+  .beast-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .beast-toggle:hover { border-color: var(--accent); }
+
+  body.beast .beast-toggle {
+    border-color: var(--accent);
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+
+  .beast-toggle-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  body.beast .beast-toggle-label { color: var(--accent); font-weight: 600; }
+
+  .beast-toggle-desc {
+    font-size: 11px;
+    color: var(--ink-faded);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+  }
+
+  .beast-switch {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    background: var(--line);
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+  }
+
+  .beast-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ink-dim);
+    transition: all 0.2s ease;
+  }
+
+  body.beast .beast-switch { background: var(--accent); }
+  body.beast .beast-switch::after {
+    left: 22px;
+    background: var(--bg);
+  }
+
+  .beast-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 2px 6px;
+    display: none;
+  }
+
+  body.beast .beast-badge { display: inline-block; }
+
+  .streak-warning {
+    display: none;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: center;
+    animation: warnPulse 1.5s ease-in-out infinite;
+  }
+
+  body.beast .streak-warning.show { display: block; }
+
+  @keyframes warnPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .timer-task.required {
+    border-bottom-color: var(--accent);
+    animation: shake 0.3s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  body.beast .timer-card {
+    border-color: var(--accent);
+  }
+
+  body.beast .timer-card.running {
+    box-shadow: 0 0 60px var(--accent-glow), inset 0 0 30px #ff1f1f11;
+  }
+
+  body.beast .btn-primary:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: var(--ink);
+  }
+
+  .beast-rules { display: none; }
+  body.beast .beast-rules { display: block; }
+  body.beast .normal-rules { display: none; }
+
   /* INSTALL BANNER */
   .install-banner {
     display: none;
@@ -597,6 +744,7 @@
         <span class="window-dot" id="window-dot"></span>
         <span id="window-status">IDLE</span>
       </div>
+      <span class="beast-badge">BEAST</span>
       <span class="clock-time" id="current-time">—</span>
     </div>
   </div>
@@ -608,8 +756,18 @@
 
   <header class="header">
     <h1><em>night</em><br><span class="strike">shift.</span></h1>
-    <div class="subtitle">ADHD-tuned · <strong>AHSEC 2026</strong> · 3 sprints &times; 25 min · 8:30–10:00 PM</div>
+    <div class="subtitle" id="subtitle">ADHD-tuned · <strong>AHSEC 2026</strong> · 3 sprints &times; 25 min · 8:30–10:00 PM</div>
   </header>
+
+  <div class="streak-warning" id="streak-warning">Streak at risk — tonight is not optional.</div>
+
+  <div class="beast-toggle" id="beast-toggle" role="button" tabindex="0">
+    <div>
+      <div class="beast-toggle-label" id="beast-toggle-label">Activate BEASTMODE</div>
+      <div class="beast-toggle-desc" id="beast-toggle-desc">50-min sprints · 3-min breaks · 4 required · no escape</div>
+    </div>
+    <div class="beast-switch"></div>
+  </div>
 
   <section class="streak">
     <div class="streak-cell">
@@ -642,10 +800,10 @@
 
   <div class="section-label"><span>Sprint tracker</span><span id="sprint-count-label">0 / 3</span></div>
   <section class="sprints" id="sprints">
-    <div class="sprint" data-idx="0"><span class="sprint-num">1</span><span class="sprint-label">sprint</span></div>
-    <div class="sprint" data-idx="1"><span class="sprint-num">2</span><span class="sprint-label">sprint</span></div>
-    <div class="sprint" data-idx="2"><span class="sprint-num">3</span><span class="sprint-label">sprint</span></div>
-    <div class="sprint" data-idx="3"><span class="sprint-num">4</span><span class="sprint-label">bonus</span></div>
+    <div class="sprint" data-idx="0"><span class="sprint-num">1</span><span class="sprint-label" data-label="sprint">sprint</span></div>
+    <div class="sprint" data-idx="1"><span class="sprint-num">2</span><span class="sprint-label" data-label="sprint">sprint</span></div>
+    <div class="sprint" data-idx="2"><span class="sprint-num">3</span><span class="sprint-label" data-label="sprint">sprint</span></div>
+    <div class="sprint" data-idx="3"><span class="sprint-num">4</span><span class="sprint-label" data-label="bonus">bonus</span></div>
   </section>
 
   <div class="section-label"><span>Tonight's subject</span></div>
@@ -658,13 +816,23 @@
   <div class="section-label"><span>Week rotation</span></div>
   <section class="week" id="week"></section>
 
-  <section class="rules">
+  <section class="rules normal-rules">
     <div class="section-label" style="margin-top: 0;"><span>Laws of nightshift</span></div>
     <div class="rule"><div class="rule-num">01</div><div class="rule-text">Phone goes in <em>another room</em>. Not on silent — physically gone.</div></div>
     <div class="rule"><div class="rule-num">02</div><div class="rule-text">Before starting: <em>name the task in one sentence</em>. If you can't, you're not ready.</div></div>
     <div class="rule"><div class="rule-num">03</div><div class="rule-text">Miss a night? The next night is <em>not</em> a double session. Just resume the rotation.</div></div>
     <div class="rule"><div class="rule-num">04</div><div class="rule-text">Sprint 4 is a <em>bonus</em>, never a plan. Only if flow is real.</div></div>
     <div class="rule"><div class="rule-num">05</div><div class="rule-text">Sundays are <em>protected</em>. Rest is consolidation, not laziness.</div></div>
+  </section>
+
+  <section class="rules beast-rules">
+    <div class="section-label" style="margin-top: 0;"><span>Laws of BEASTMODE</span></div>
+    <div class="rule"><div class="rule-num">01</div><div class="rule-text">Phone is <em>off</em> and in another room. No exceptions. No "just checking".</div></div>
+    <div class="rule"><div class="rule-num">02</div><div class="rule-text"><em>Task must be typed</em> before Start. No task, no sprint.</div></div>
+    <div class="rule"><div class="rule-num">03</div><div class="rule-text">Reset is <em>locked</em> while a sprint runs. You finish what you start.</div></div>
+    <div class="rule"><div class="rule-num">04</div><div class="rule-text">All <em>4 sprints are mandatory</em>. 50 minutes of focus, 3 minutes to breathe.</div></div>
+    <div class="rule"><div class="rule-num">05</div><div class="rule-text">Miss a night and the <em>streak dies</em>. No grace. Burn the bridge behind you.</div></div>
+    <div class="rule"><div class="rule-num">06</div><div class="rule-text">Sundays stay <em>protected</em> — even a beast sleeps.</div></div>
   </section>
 
   <div class="footer">
@@ -699,6 +867,14 @@
   let state = load();
   state.days = state.days || {};
   state.sprintTotal = state.sprintTotal || 0;
+  state.beast = !!state.beast;
+
+  // ─────────── BEASTMODE CONFIG ───────────
+  const MODES = {
+    normal: { focus: 25*60, shortBreak: 5*60, longBreak: 15*60, required: 3, slots: 4 },
+    beast:  { focus: 50*60, shortBreak: 3*60, longBreak: 10*60, required: 4, slots: 4 }
+  };
+  const cfg = () => state.beast ? MODES.beast : MODES.normal;
 
   const todayEntry = () => {
     const k = todayKey();
@@ -795,16 +971,24 @@
         save(state);
         btn.classList.toggle('checked');
         renderStreak();
+        if (typeof updateStreakWarning === 'function') updateStreakWarning();
       });
     });
   }
 
   function renderSprints() {
     const done = todayEntry().sprints;
+    const required = cfg().required;
     document.querySelectorAll('.sprint').forEach((el, i) => {
       el.classList.toggle('done', i < done);
+      const labelEl = el.querySelector('.sprint-label');
+      if (labelEl) {
+        labelEl.textContent = state.beast
+          ? (i < required ? 'sprint' : 'over')
+          : (labelEl.dataset.label || 'sprint');
+      }
     });
-    document.getElementById('sprint-count-label').textContent = `${done} / 3`;
+    document.getElementById('sprint-count-label').textContent = `${done} / ${required}`;
   }
 
   function renderStreak() {
@@ -838,13 +1022,15 @@
   }
 
   // ─────────── TIMER ───────────
-  let timer = { running: false, phase: 'focus', remaining: 25*60, interval: null, total: 25*60 };
+  let timer = { running: false, phase: 'focus', remaining: cfg().focus, interval: null, total: cfg().focus };
 
   const display = document.getElementById('timer-display');
   const phaseEl = document.getElementById('phase');
   const fill = document.getElementById('timer-bar-fill');
   const card = document.getElementById('timer-card');
   const startBtn = document.getElementById('start-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  const taskInput = document.getElementById('task-input');
 
   function fmt(s) {
     const m = Math.floor(s/60).toString().padStart(2,'0');
@@ -875,25 +1061,34 @@
         const t = todayEntry();
         t.sprints = Math.min(4, t.sprints + 1);
         state.sprintTotal = (state.sprintTotal || 0) + 1;
+
+        // Auto-check the day in BEASTMODE once required sprints hit
+        if (state.beast && t.sprints >= cfg().required) {
+          state.weekChecks = state.weekChecks || {};
+          state.weekChecks[todayKey()] = true;
+        }
+
         save(state);
         renderSprints();
         renderStreak();
+        renderWeek();
+        updateStreakWarning();
 
         try { beep(); } catch {}
-        if (navigator.vibrate) navigator.vibrate([200, 80, 200]);
+        if (navigator.vibrate) navigator.vibrate(state.beast ? [300, 80, 300, 80, 300] : [200, 80, 200]);
 
-        const breakLen = (t.sprints % 4 === 0) ? 15*60 : 5*60;
+        const breakLen = (t.sprints % 4 === 0) ? cfg().longBreak : cfg().shortBreak;
         timer.phase = 'break';
         timer.total = breakLen;
         timer.remaining = breakLen;
-        startBtn.textContent = 'Start break';
+        startBtn.textContent = state.beast ? 'BREATHE' : 'Start break';
       } else {
         try { beep(); } catch {}
         if (navigator.vibrate) navigator.vibrate([200, 80, 200]);
         timer.phase = 'focus';
-        timer.total = 25*60;
-        timer.remaining = 25*60;
-        startBtn.textContent = 'Start focus';
+        timer.total = cfg().focus;
+        timer.remaining = cfg().focus;
+        startBtn.textContent = state.beast ? 'ATTACK' : 'Start focus';
       }
       updateTimer();
       return;
@@ -914,29 +1109,56 @@
 
   startBtn.addEventListener('click', () => {
     if (timer.running) {
+      // Pausing: in BEASTMODE, pausing is blocked during focus
+      if (state.beast && timer.phase === 'focus') {
+        startBtn.animate(
+          [{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }],
+          { duration: 250 }
+        );
+        return;
+      }
       clearInterval(timer.interval);
       timer.running = false;
       card.classList.remove('running');
       display.classList.remove('running');
-      startBtn.textContent = timer.phase === 'focus' ? 'Resume focus' : 'Resume break';
+      startBtn.textContent = timer.phase === 'focus'
+        ? (state.beast ? 'RESUME ATTACK' : 'Resume focus')
+        : (state.beast ? 'RESUME' : 'Resume break');
     } else {
+      // BEASTMODE + focus phase: require a named task
+      if (state.beast && timer.phase === 'focus' && !taskInput.value.trim()) {
+        taskInput.classList.remove('required');
+        void taskInput.offsetWidth; // restart animation
+        taskInput.classList.add('required');
+        taskInput.focus();
+        return;
+      }
       timer.running = true;
       card.classList.add('running');
       display.classList.add('running');
-      startBtn.textContent = 'Pause';
+      startBtn.textContent = state.beast && timer.phase === 'focus' ? 'LOCKED IN' : 'Pause';
       timer.interval = setInterval(tick, 1000);
     }
   });
 
-  document.getElementById('reset-btn').addEventListener('click', () => {
+  resetBtn.addEventListener('click', () => {
+    // BEASTMODE locks reset mid-sprint
+    if (state.beast && timer.running && timer.phase === 'focus') {
+      resetBtn.animate(
+        [{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }],
+        { duration: 250 }
+      );
+      return;
+    }
+    if (timer.running && !confirm('Abandon this sprint?')) return;
     clearInterval(timer.interval);
     timer.running = false;
     timer.phase = 'focus';
-    timer.total = 25*60;
-    timer.remaining = 25*60;
+    timer.total = cfg().focus;
+    timer.remaining = cfg().focus;
     card.classList.remove('running');
     display.classList.remove('running');
-    startBtn.textContent = 'Start focus';
+    startBtn.textContent = state.beast ? 'ATTACK' : 'Start focus';
     updateTimer();
   });
 
@@ -948,6 +1170,70 @@
     save(state);
     renderSprints();
     renderStreak();
+  });
+
+  // ─────────── BEASTMODE TOGGLE ───────────
+  const beastToggle = document.getElementById('beast-toggle');
+  const beastLabel = document.getElementById('beast-toggle-label');
+  const beastDesc = document.getElementById('beast-toggle-desc');
+  const subtitle = document.getElementById('subtitle');
+  const streakWarning = document.getElementById('streak-warning');
+
+  function applyBeastUI() {
+    document.body.classList.toggle('beast', state.beast);
+    if (state.beast) {
+      beastLabel.textContent = 'BEASTMODE · ENGAGED';
+      beastDesc.textContent = '50-min sprints · 3-min breaks · 4 required · no escape';
+      subtitle.innerHTML = 'Exam-crunch protocol · <strong>AHSEC 2026</strong> · 4 sprints &times; 50 min · no mercy';
+      taskInput.placeholder = 'Name the task. Beastmode requires it.';
+      if (!timer.running && timer.phase === 'focus') startBtn.textContent = 'ATTACK';
+    } else {
+      beastLabel.textContent = 'Activate BEASTMODE';
+      beastDesc.textContent = 'Harder config: 50-min sprints, locked reset, task-required';
+      subtitle.innerHTML = 'ADHD-tuned · <strong>AHSEC 2026</strong> · 3 sprints &times; 25 min · 8:30–10:00 PM';
+      taskInput.placeholder = 'One sentence. What exactly are you doing?';
+      if (!timer.running && timer.phase === 'focus') startBtn.textContent = 'Start focus';
+    }
+    // Rebuild timer totals to match mode if idle
+    if (!timer.running) {
+      timer.total = timer.phase === 'focus' ? cfg().focus : cfg().shortBreak;
+      timer.remaining = timer.total;
+      updateTimer();
+    }
+    renderSprints();
+    updateStreakWarning();
+  }
+
+  function updateStreakWarning() {
+    if (!state.beast) { streakWarning.classList.remove('show'); return; }
+    const checked = (state.weekChecks || {})[todayKey()];
+    const d = new Date();
+    const mins = d.getHours()*60 + d.getMinutes();
+    const pastWindow = mins >= (20*60+30);
+    if (!checked && pastWindow) {
+      streakWarning.classList.add('show');
+    } else {
+      streakWarning.classList.remove('show');
+    }
+  }
+
+  function toggleBeast() {
+    if (timer.running) {
+      alert('Finish or reset the current sprint before switching modes.');
+      return;
+    }
+    state.beast = !state.beast;
+    if (state.beast && !confirm('Engage BEASTMODE? 50-minute sprints, locked reset, task required. Confirm.')) {
+      state.beast = false;
+      return;
+    }
+    save(state);
+    applyBeastUI();
+  }
+
+  beastToggle.addEventListener('click', toggleBeast);
+  beastToggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleBeast(); }
   });
 
   // ─────────── PWA INSTALL ───────────
@@ -982,11 +1268,12 @@
   // ─────────── INIT ───────────
   renderToday();
   renderWeek();
+  applyBeastUI();
   renderSprints();
   renderStreak();
   updateTimer();
   renderClock();
-  setInterval(renderClock, 30000); // every 30s
+  setInterval(() => { renderClock(); updateStreakWarning(); }, 30000); // every 30s
 
   // Re-render if day changed while app was open
   setInterval(() => {

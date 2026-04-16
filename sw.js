@@ -1,4 +1,4 @@
-const CACHE = 'nightshift-v1';
+const CACHE = 'nightshift-v2-beastmode';
 const ASSETS = [
   './',
   './index.html',
