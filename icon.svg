@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bgGrad" cx="30%" cy="25%" r="90%">
+      <stop offset="0%" stop-color="#1a1a26"/>
+      <stop offset="60%" stop-color="#0d0d14"/>
+      <stop offset="100%" stop-color="#05050a"/>
+    </radialGradient>
+
+    <radialGradient id="moonGrad" cx="30%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#fbf4e8"/>
+      <stop offset="65%" stop-color="#e8dcc4"/>
+      <stop offset="100%" stop-color="#b8a478"/>
+    </radialGradient>
+
+    <linearGradient id="streakGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7a4e"/>
+      <stop offset="50%" stop-color="#ff5b2e"/>
+      <stop offset="100%" stop-color="#e63e12"/>
+    </linearGradient>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Clip path that creates the crescent: full moon minus offset circle -->
+    <clipPath id="crescentClip">
+      <path d="M 256 116 A 140 140 0 1 0 256 396 A 140 140 0 1 0 256 116 Z M 310 256 m -130 0 a 130 130 0 1 0 260 0 a 130 130 0 1 0 -260 0 Z" clip-rule="evenodd"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#bgGrad)"/>
+
+  <!-- Atmospheric glow -->
+  <circle cx="180" cy="180" r="220" fill="#ff5b2e" opacity="0.08"/>
+  <circle cx="380" cy="380" r="180" fill="#d4a574" opacity="0.05"/>
+
+  <!-- Stars -->
+  <g fill="#f4ede4">
+    <circle cx="110" cy="120" r="1.8" opacity="0.7"/>
+    <circle cx="430" cy="95" r="2.2" opacity="0.9"/>
+    <circle cx="90" cy="360" r="1.4" opacity="0.6"/>
+    <circle cx="445" cy="400" r="1.6" opacity="0.75"/>
+    <circle cx="130" cy="430" r="1.2" opacity="0.5"/>
+    <circle cx="390" cy="450" r="1.4" opacity="0.6"/>
+    <circle cx="70" cy="250" r="1" opacity="0.5"/>
+    <circle cx="460" cy="250" r="1.2" opacity="0.6"/>
+    <circle cx="380" cy="60" r="1" opacity="0.5"/>
+  </g>
+
+  <!-- Draw full moon -->
+  <circle cx="256" cy="256" r="140" fill="url(#moonGrad)"/>
+
+  <!-- Overlay with background gradient to carve crescent -->
+  <circle cx="310" cy="256" r="128" fill="url(#bgGrad)"/>
+
+  <!-- Subtle craters on visible portion of crescent -->
+  <g opacity="0.18">
+    <circle cx="170" cy="225" r="7" fill="#6b5e4a"/>
+    <circle cx="150" cy="290" r="4" fill="#6b5e4a"/>
+    <circle cx="175" cy="340" r="5" fill="#6b5e4a"/>
+    <circle cx="140" cy="210" r="3" fill="#6b5e4a"/>
+    <circle cx="160" cy="265" r="2.5" fill="#6b5e4a"/>
+  </g>
+
+  <!-- Diagonal streak through moon (the "shift") -->
+  <g filter="url(#glow)">
+    <path d="M 110 390 L 410 120"
+          stroke="url(#streakGrad)"
+          stroke-width="16"
+          stroke-linecap="round"
+          fill="none"/>
+  </g>
+
+  <!-- Streak inner highlight -->
+  <path d="M 110 390 L 410 120"
+        stroke="#ffe0ce"
+        stroke-width="3"
+        stroke-linecap="round"
+        fill="none"
+        opacity="0.8"/>
+
+  <!-- Accent tick at top -->
+  <circle cx="410" cy="120" r="8" fill="#ff5b2e"/>
+  <circle cx="410" cy="120" r="14" fill="#ff5b2e" opacity="0.25"/>
+</svg>
