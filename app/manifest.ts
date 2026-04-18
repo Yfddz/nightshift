@@ -6,6 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "BEASTMODE",
     description: "5-day split gym tracker. Lift. Log. Progress.",
     start_url: "/",
+    scope: "/",
     display: "standalone",
     orientation: "portrait",
     background_color: "#000000",
@@ -13,15 +14,28 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ["fitness", "health", "productivity"],
     icons: [
       {
+        src: "/icon1",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
         src: "/icon",
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/apple-icon",
-        sizes: "180x180",
+        src: "/icon1",
+        sizes: "192x192",
         type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/icon",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   };

@@ -1,10 +1,6 @@
-const CACHE = "beastmode-v1";
-const PRECACHE = ["/", "/manifest.webmanifest"];
+const CACHE = "beastmode-v2";
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(PRECACHE)),
-  );
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
@@ -32,11 +28,15 @@ self.addEventListener("fetch", (event) => {
       const cached = await cache.match(req);
       const network = fetch(req)
         .then((res) => {
-          if (res && res.ok) cache.put(req, res.clone());
+          if (res && res.ok) {
+            cache.put(req, res.clone()).catch(() => {});
+          }
           return res;
         })
         .catch(() => null);
-      return cached || (await network) || new Response("Offline", { status: 503 });
+      return (
+        cached || (await network) || new Response("Offline", { status: 503 })
+      );
     })(),
   );
 });
